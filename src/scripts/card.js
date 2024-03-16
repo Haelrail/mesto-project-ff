@@ -8,6 +8,7 @@ export function createCard(cardName, cardLink, deleteCard, likeCard, openCard) {
   const cardOpening = newCard.querySelector('.card__image');
 
   newCard.querySelector('.card__image').src = cardLink;
+  newCard.querySelector('.card__image').alt = 'фотография местности';
   newCard.querySelector('.card__title').textContent = cardName;
 
   deleteButton.addEventListener('click', deleteCard);

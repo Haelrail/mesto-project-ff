@@ -11,12 +11,16 @@ const cardsList = document.querySelector('.places__list');
 
 const profilePopup = document.querySelector('.popup_type_edit');
 const newCardPopup = document.querySelector('.popup_type_new-card');
+const openCardPopup = document.querySelector('.popup_type_image');
 
 const inputCardName = document.querySelector('.popup__input_type_card-name');
 const inputCardLink = document.querySelector('.popup__input_type_url');
 
 const inputName = document.querySelector('.popup__input_type_name');
 const inputOccupation = document.querySelector('.popup__input_type_description');
+
+const openedCardCaption = openCardPopup.querySelector('.popup__caption');
+const openedCardImage = openCardPopup.querySelector('.popup__image');
 
 // Формы
 
@@ -72,8 +76,7 @@ cardFormElement.addEventListener('submit', handleFormNewCard);
 // Открытие карточек
 
 function openCard(cardName, cardLink) {
-  const openCardPopup = document.querySelector('.popup_type_image');
-  openCardPopup.querySelector('.popup__caption').textContent = cardName;
-  openCardPopup.querySelector('.popup__image').src = cardLink;
+  openedCardCaption.textContent = cardName;
+  openedCardImage.src = cardLink;
   openPopup(openCardPopup);
 }
