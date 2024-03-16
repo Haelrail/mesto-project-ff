@@ -12,14 +12,18 @@ const cardsList = document.querySelector('.places__list');
 
 // @todo: Функция создания карточки
 
-function createCard(cardName, cardLink, deleteCard) {
+function createCard(cardName, cardLink, deleteCard, likeCard, openCard) {
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = newCard.querySelector('.card__delete-button');
+  const likeButton = newCard.querySelector('.card__like-button');
+  const cardOpening = newCard.querySelector('.card__image');
 
   newCard.querySelector('.card__image').src = cardLink;
   newCard.querySelector('.card__title').textContent = cardName;
 
   deleteButton.addEventListener('click', deleteCard);
+  likeButton.addEventListener('click', likeCard);
+  cardOpening.addEventListener('click', () => openCard(cardName, cardLink));
 
   return newCard;
 }
@@ -33,7 +37,7 @@ function deleteCard(event) {
 // @todo: Вывести карточки на страницу
 
 initialCards.forEach(function(card){
-  cardsList.append(createCard(card.name, card.link, deleteCard));
+  cardsList.append(createCard(card.name, card.link, deleteCard, likeCard, openCard));
 });
 
 // @wip: открытие попапа изменения профиля на странице, управление попапами
@@ -114,7 +118,7 @@ const inputCardLink = document.querySelector('.popup__input_type_url');
 
 function handleFormNewCard(event) {
   event.preventDefault();
-  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, deleteCard));
+  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, deleteCard, likeCard, openCard));
   closePopup(newCardPopup);
   cardFormElement.reset();
 }
@@ -125,4 +129,21 @@ profileNewCardButton.addEventListener('click', function() {
 
 cardFormElement.addEventListener('submit', handleFormNewCard);
 
+// wip: добавление "лайка" на карточку
 
+function likeCard(event) {
+  const likeButton = event.target.closest('.card__like-button');
+  if (likeButton.classList.contains('card__like-button_is-active'))
+    likeButton.classList.remove('card__like-button_is-active');
+  else
+    likeButton.classList.add('card__like-button_is-active');
+}
+
+// wip: открытие карточек
+
+function openCard(cardName, cardLink) {
+  const openCardPopup = document.querySelector('.popup_type_image');
+  openCardPopup.querySelector('.popup__caption').textContent = cardName;
+  openCardPopup.querySelector('.popup__image').src = cardLink;
+  openPopup(openCardPopup);
+}
