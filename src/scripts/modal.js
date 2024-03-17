@@ -5,7 +5,7 @@
 export function closePopup(popup) {
   document.removeEventListener('keydown', closePopupEsc);
   document.removeEventListener('click', closePopupOverlay);
-  popup.querySelector('.popup__close').removeEventListener('click', () => closePopup(popup));
+  popup.querySelector('.popup__close').removeEventListener('click', closePopupButton);
   popup.classList.remove('popup_is-opened');
 }
 
@@ -24,6 +24,12 @@ function closePopupOverlay(event) {
   }
 }
 
+// Закрытие по кнопке
+
+function closePopupButton(event) {
+  closePopup(event.target.closest('.popup'));
+}
+
 // Открытие окна
 
 export function openPopup(popup) {
@@ -31,5 +37,5 @@ export function openPopup(popup) {
   popup.classList.add('popup_is-opened');
   document.addEventListener('keydown', closePopupEsc);
   document.addEventListener('click', closePopupOverlay);
-  popup.querySelector('.popup__close').addEventListener('click', () => closePopup(popup)); 
+  popup.querySelector('.popup__close').addEventListener('click', closePopupButton); 
 }

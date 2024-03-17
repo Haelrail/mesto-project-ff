@@ -78,5 +78,6 @@ cardFormElement.addEventListener('submit', handleFormNewCard);
 function openCard(cardName, cardLink) {
   openedCardCaption.textContent = cardName;
   openedCardImage.src = cardLink;
+  openedCardImage.alt = cardName;
   openPopup(openCardPopup);
 }
