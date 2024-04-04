@@ -3,6 +3,7 @@ import {initialCards} from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { closePopup, openPopup } from './scripts/modal.js';
 import { clearValidation, enableValidation } from './scripts/validation.js';
+import { getProfileData, getInitialCards, setNewProfileInfo } from './scripts/api.js';
 
 // DOM узлы
 
@@ -38,9 +39,9 @@ const profileNewCardButton = profile.querySelector('.profile__add-button');
 
 // Вывод карточек на страницу
 
-initialCards.forEach(function(card){
-  cardsList.append(createCard(card.name, card.link, deleteCard, likeCard, openCard));
-});
+// initialCards.forEach(function(card){
+//   cardsList.append(createCard(card.name, card.link, deleteCard, likeCard, openCard));
+// });
 
 // Изменение профиля
 
@@ -49,6 +50,7 @@ function handleFormSubmit(event) {
   profileName.textContent = inputName.value;
   profileOccupation.textContent = inputOccupation.value;
   closePopup(profilePopup);
+  setNewProfileInfo(profileName.textContent, profileOccupation.textContent);
 }
 
 profileFormElement.addEventListener('submit', handleFormSubmit);
@@ -158,5 +160,12 @@ function openCard(cardName, cardLink) {
 ////////////////////////////////////////////////////////////////
 
 const popupFormList = Array.from(document.querySelectorAll('.popup__form'));
+const profileImage = profile.querySelector('.profile__image');
 
 enableValidation(popupFormList);
+
+getProfileData(profileName, profileOccupation, profileImage);
+
+getInitialCards(cardsList, createCard, deleteCard, likeCard, openCard);
+
+

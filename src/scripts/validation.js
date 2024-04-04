@@ -58,10 +58,10 @@ export function clearValidation(form) {
   inputList.forEach((input) => {
     hideInputError(input, form);
   })
-};
+}
 
 export function enableValidation(formList) {
   formList.forEach((formElement) => {
     addFormValidation(formElement);
   })
-};
+}
