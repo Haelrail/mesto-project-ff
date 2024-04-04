@@ -2,6 +2,7 @@ import './pages/index.css';
 import {initialCards} from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { closePopup, openPopup } from './scripts/modal.js';
+import { clearValidation, enableValidation } from './scripts/validation.js';
 
 // DOM узлы
 
@@ -53,6 +54,7 @@ function handleFormSubmit(event) {
 profileFormElement.addEventListener('submit', handleFormSubmit);
 
 profileEditButton.addEventListener('click', function() {
+  clearValidation(profileFormElement);
   openPopup(profilePopup);
   inputName.value = profileName.textContent;
   inputOccupation.value = profileOccupation.textContent;
@@ -64,6 +66,7 @@ function handleFormNewCard(event) {
   event.preventDefault();
   cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, deleteCard, likeCard, openCard));
   closePopup(newCardPopup);
+  clearValidation(cardFormElement);
   cardFormElement.reset();
 }
 
@@ -81,3 +84,79 @@ function openCard(cardName, cardLink) {
   openedCardImage.alt = cardName;
   openPopup(openCardPopup);
 }
+
+// /////////////////////////////////////////////////////////////
+//                          7 спринт                          //
+// /////////////////////////////////////////////////////////////
+
+// const profileFormInputs = Array.from(profileFormElement.querySelectorAll('.popup__input'));
+// const cardFormInputs = Array.from(cardFormElement.querySelectorAll('.popup__input'));
+
+// const submitButton = profileFormElement.querySelector('.button');
+
+// const showInputError = (input) => {
+//   input.classList.add('popup__input_type_error');
+//   const errorNote = profileFormElement.querySelector(`.${input.id}-error`);
+//   errorNote.textContent = input.validationMessage;
+// };
+
+// const hideInputError = (input) => {
+//   input.classList.remove('popup__input_type_error')
+//   const errorNote = profileFormElement.querySelector(`.${input.id}-error`);
+//   errorNote.textContent = '';
+// };
+
+// const checkValid = (input) => {
+//   if (input.validity.patternMismatch)
+//     input.setCustomValidity("Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы");
+//   else
+//   input.setCustomValidity('');
+//   if (!input.validity.valid)
+//     showInputError(input);
+//   else
+//     hideInputError(input);
+// };
+
+// // manageSubmitButton(submitButton, profileFormInputs);
+
+// profileFormInputs.forEach((input) => {
+//   input.addEventListener('input', () => {
+//     checkValid(input);
+//     manageSubmitButton(submitButton, profileFormInputs);
+//   });
+// });
+
+// function clearValidation(form) {
+//   const inputList = form.querySelectorAll('.popup__input_type_error');
+//   inputList.forEach((input) => {
+//     hideInputError(input);
+//   })
+// };
+
+// function manageSubmitButton(button, inputList) {
+//   if (checkInputsValid(inputList)) {
+//     button.disabled = true;
+//     button.classList.add('popup__button_disabled');
+//     button.classList.remove('popup__button_active');
+//   }
+//   else {
+//     button.disabled = false;
+//     button.classList.remove('popup__button_disabled');
+//     button.classList.add('popup__button_active');
+//   }
+
+// };
+
+// function checkInputsValid(inputList) {
+//   return inputList.some((input) => {
+//     return !input.validity.valid;
+//   })
+// };
+
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+
+const popupFormList = Array.from(document.querySelectorAll('.popup__form'));
+
+enableValidation(popupFormList);
