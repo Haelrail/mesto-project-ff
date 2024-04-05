@@ -3,7 +3,7 @@ import {initialCards} from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { closePopup, openPopup } from './scripts/modal.js';
 import { clearValidation, enableValidation } from './scripts/validation.js';
-import { getProfileData, getInitialCards, setNewProfileInfo } from './scripts/api.js';
+import { getProfileData, getInitialCards, setNewProfileInfo, sendNewCardOnServer, deleteCardFromServer } from './scripts/api.js';
 
 // DOM узлы
 
@@ -40,7 +40,7 @@ const profileNewCardButton = profile.querySelector('.profile__add-button');
 // Вывод карточек на страницу
 
 // initialCards.forEach(function(card){
-//   cardsList.append(createCard(card.name, card.link, deleteCard, likeCard, openCard));
+//   cardsList.append(createCard(card.name, card.link, deleteCard, likeCard, openCard, 0, userId));
 // });
 
 // Изменение профиля
@@ -66,7 +66,8 @@ profileEditButton.addEventListener('click', function() {
 
 function handleFormNewCard(event) {
   event.preventDefault();
-  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, deleteCard, likeCard, openCard));
+  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, openCard, 0, userId, userId, cardId));
+  sendNewCardOnServer(inputCardName.value, inputCardLink.value);
   closePopup(newCardPopup);
   clearValidation(cardFormElement);
   cardFormElement.reset();
@@ -162,10 +163,28 @@ function openCard(cardName, cardLink) {
 const popupFormList = Array.from(document.querySelectorAll('.popup__form'));
 const profileImage = profile.querySelector('.profile__image');
 
+let userId;
+
 enableValidation(popupFormList);
 
-getProfileData(profileName, profileOccupation, profileImage);
+Promise.all([getProfileData, getInitialCards])
+  .then(([data, cards]) => {
+    profileName.textContent = data.name;
+    profileOccupation.textContent = data.about;
+    profileImage.style = `background-image: url("${data.avatar}")`;
+    userId = data._id;
 
-getInitialCards(cardsList, createCard, deleteCard, likeCard, openCard);
+    cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, userId, card._id)));
+  });
 
+// getProfileData(profileName, profileOccupation, profileImage);
 
+// getInitialCards(cardsList, createCard, deleteCard, likeCard, openCard, '8f3d3456-430a-4c87-a5de-14735dcc84d0');
+
+// const pm = new Promise.resolve(getProfileData())
+//   .then((data) => {
+//     profileName.textContent = data.name;
+//     profileOccupation.textContent = data.about;
+//     profileImage.style = `background-image: url("${data.avatar}")`;
+//     userId = data._id;
+//   })
