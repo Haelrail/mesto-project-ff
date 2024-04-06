@@ -131,3 +131,16 @@ export function removeLikeFromCard(cardId) {
     }
   });
 }
+
+export function updateAvatar(newUrl) {
+  fetch('https://nomoreparties.co/v1/wff-cohort-10/users/me/avatar', {
+    method: 'PATCH',
+    headers: {
+      authorization: '8f3d3456-430a-4c87-a5de-14735dcc84d0',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      avatar: newUrl
+    })
+  });
+}

@@ -3,7 +3,7 @@ import {initialCards} from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { closePopup, openPopup } from './scripts/modal.js';
 import { clearValidation, enableValidation } from './scripts/validation.js';
-import { getProfileData, getInitialCards, setNewProfileInfo, sendNewCardOnServer, deleteCardFromServer } from './scripts/api.js';
+import { getProfileData, getInitialCards, setNewProfileInfo, sendNewCardOnServer, deleteCardFromServer, updateAvatar } from './scripts/api.js';
 
 // DOM узлы
 
@@ -66,7 +66,7 @@ profileEditButton.addEventListener('click', function() {
 
 function handleFormNewCard(event) {
   event.preventDefault();
-  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, openCard, 0, userId, userId, cardId));
+  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, openCard, 0, userId, userId, cardId, []));
   sendNewCardOnServer(inputCardName.value, inputCardLink.value);
   closePopup(newCardPopup);
   clearValidation(cardFormElement);
@@ -75,6 +75,7 @@ function handleFormNewCard(event) {
 
 profileNewCardButton.addEventListener('click', function() {
   openPopup(newCardPopup);
+  cardFormElement.reset();
 });
 
 cardFormElement.addEventListener('submit', handleFormNewCard);
@@ -92,76 +93,10 @@ function openCard(cardName, cardLink) {
 //                          7 спринт                          //
 // /////////////////////////////////////////////////////////////
 
-// const profileFormInputs = Array.from(profileFormElement.querySelectorAll('.popup__input'));
-// const cardFormInputs = Array.from(cardFormElement.querySelectorAll('.popup__input'));
-
-// const submitButton = profileFormElement.querySelector('.button');
-
-// const showInputError = (input) => {
-//   input.classList.add('popup__input_type_error');
-//   const errorNote = profileFormElement.querySelector(`.${input.id}-error`);
-//   errorNote.textContent = input.validationMessage;
-// };
-
-// const hideInputError = (input) => {
-//   input.classList.remove('popup__input_type_error')
-//   const errorNote = profileFormElement.querySelector(`.${input.id}-error`);
-//   errorNote.textContent = '';
-// };
-
-// const checkValid = (input) => {
-//   if (input.validity.patternMismatch)
-//     input.setCustomValidity("Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы");
-//   else
-//   input.setCustomValidity('');
-//   if (!input.validity.valid)
-//     showInputError(input);
-//   else
-//     hideInputError(input);
-// };
-
-// // manageSubmitButton(submitButton, profileFormInputs);
-
-// profileFormInputs.forEach((input) => {
-//   input.addEventListener('input', () => {
-//     checkValid(input);
-//     manageSubmitButton(submitButton, profileFormInputs);
-//   });
-// });
-
-// function clearValidation(form) {
-//   const inputList = form.querySelectorAll('.popup__input_type_error');
-//   inputList.forEach((input) => {
-//     hideInputError(input);
-//   })
-// };
-
-// function manageSubmitButton(button, inputList) {
-//   if (checkInputsValid(inputList)) {
-//     button.disabled = true;
-//     button.classList.add('popup__button_disabled');
-//     button.classList.remove('popup__button_active');
-//   }
-//   else {
-//     button.disabled = false;
-//     button.classList.remove('popup__button_disabled');
-//     button.classList.add('popup__button_active');
-//   }
-
-// };
-
-// function checkInputsValid(inputList) {
-//   return inputList.some((input) => {
-//     return !input.validity.valid;
-//   })
-// };
-
-////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////
-
 const popupFormList = Array.from(document.querySelectorAll('.popup__form'));
 const profileImage = profile.querySelector('.profile__image');
+const popupChangeAvatar = document.querySelector('.popup_type_change-avatar');
+const profileAvatarChangeElement = document.forms['new-avatar'];
 
 let userId;
 
@@ -174,17 +109,24 @@ Promise.all([getProfileData, getInitialCards])
     profileImage.style = `background-image: url("${data.avatar}")`;
     userId = data._id;
 
-    cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, userId, card._id)));
+    cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, userId, card._id, card.likes)));
   });
 
-// getProfileData(profileName, profileOccupation, profileImage);
+function handleFormAvatarChange(event) {
+  event.preventDefault();
+  const newAvatarLink = profileAvatarChangeElement.querySelector('.popup__input').value;
+  profileImage.style = `background-image: url("${newAvatarLink}")`;
+  updateAvatar(newAvatarLink);
+  closePopup(popupChangeAvatar);
+  clearValidation(profileAvatarChangeElement);
+}
 
-// getInitialCards(cardsList, createCard, deleteCard, likeCard, openCard, '8f3d3456-430a-4c87-a5de-14735dcc84d0');
+profileAvatarChangeElement.addEventListener('submit', handleFormAvatarChange);
 
-// const pm = new Promise.resolve(getProfileData())
-//   .then((data) => {
-//     profileName.textContent = data.name;
-//     profileOccupation.textContent = data.about;
-//     profileImage.style = `background-image: url("${data.avatar}")`;
-//     userId = data._id;
-//   })
+profileImage.addEventListener('click', () => {
+  openPopup(popupChangeAvatar);
+  profileAvatarChangeElement.reset();
+  clearValidation(profileAvatarChangeElement);
+});
+
+

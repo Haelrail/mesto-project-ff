@@ -2,7 +2,7 @@ import { deleteCardFromServer, addLikeOnCard, removeLikeFromCard } from "./api";
 
 // Функция создания карточки
 
-export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwnerId, userId, cardId) {
+export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwnerId, userId, cardId, likeList) {
   const cardTemplate = document.querySelector('#card-template').content;
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = newCard.querySelector('.card__delete-button');
@@ -21,6 +21,8 @@ export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwn
     });
   else
     deleteButton.remove();
+
+  checkLike(likeList, likeButton, userId);
 
   likeButton.addEventListener('click', () => cardLikeNumber = likeCard(cardId, likeButton, cardLikeNumber, newCard));
   cardOpening.addEventListener('click', () => openCard(cardName, cardLink));
@@ -44,15 +46,16 @@ export function deleteCard(event) {
 //     likeButton.classList.add('card__like-button_is-active');
 // }
 
-function checkLike() {
-  
+function checkLike(likeList, likeButton, userId) {
+  if (likeList.some((elem) => elem._id === userId))
+    likeButton.classList.add('card__like-button_is-active');
 }
 
 export function likeCard(cardId, likeButton, cardLikeNumber, newCard) {
   if (likeButton.classList.contains('card__like-button_is-active')) {
     likeButton.classList.remove('card__like-button_is-active');
     newCard.querySelector('.card__like-counter').textContent = --cardLikeNumber;
-    deleteCardFromServer(cardId);
+    removeLikeFromCard(cardId);
   }
   else {
     likeButton.classList.add('card__like-button_is-active');

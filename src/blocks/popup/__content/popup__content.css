@@ -9,6 +9,11 @@
   padding: 34px 36px;
 }
 
+.popup__content_one-input {
+  /* min-height: inherit; */
+  min-height: 230px;
+}
+
 @media screen and (max-width: 568px) {
   .popup__content {
     width: 100%;
