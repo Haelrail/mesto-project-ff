@@ -66,8 +66,8 @@ profileEditButton.addEventListener('click', function() {
 
 function handleFormNewCard(event) {
   event.preventDefault();
+  const cardId = sendNewCardOnServer(inputCardName.value, inputCardLink.value)._id;
   cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, openCard, 0, userId, userId, cardId, []));
-  sendNewCardOnServer(inputCardName.value, inputCardLink.value);
   closePopup(newCardPopup);
   clearValidation(cardFormElement);
   cardFormElement.reset();
@@ -102,8 +102,10 @@ let userId;
 
 enableValidation(popupFormList);
 
-Promise.all([getProfileData, getInitialCards])
+Promise.all([getProfileData(), getInitialCards()])
   .then(([data, cards]) => {
+    console.log(data);
+    console.log(cards);
     profileName.textContent = data.name;
     profileOccupation.textContent = data.about;
     profileImage.style = `background-image: url("${data.avatar}")`;
