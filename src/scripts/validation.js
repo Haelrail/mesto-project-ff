@@ -1,3 +1,5 @@
+// Управление отображением ошибки ввода
+
 const showInputError = (input, form) => {
   input.classList.add('popup__input_type_error');
   const errorNote = form.querySelector(`.${input.id}-error`);
@@ -9,6 +11,8 @@ const hideInputError = (input, form) => {
   const errorNote = form.querySelector(`.${input.id}-error`);
   errorNote.textContent = '';
 };
+
+// Проверка введенного текста
 
 const checkValid = (input, form) => {
   if (input.validity.patternMismatch)
@@ -27,6 +31,8 @@ function checkInputsValid(inputList) {
   })
 };
 
+// Управление кнопкой отправки формы
+
 function manageSubmitButton(button, inputList) {
   if (checkInputsValid(inputList)) {
     button.disabled = true;
@@ -41,6 +47,8 @@ function manageSubmitButton(button, inputList) {
 
 };
 
+// Включить валидацию на всех полях в форме
+
 function addFormValidation(form) {
   const inputList = Array.from(form.querySelectorAll('.popup__input'));
   const submitButton = form.querySelector('.button');
@@ -53,12 +61,16 @@ function addFormValidation(form) {
   });
 };
 
+// Отключить валидацию на форме
+
 export function clearValidation(form) {
   const inputList = form.querySelectorAll('.popup__input_type_error');
   inputList.forEach((input) => {
     hideInputError(input, form);
   })
 }
+
+// Включить валидацию в проекте
 
 export function enableValidation(formList) {
   formList.forEach((formElement) => {

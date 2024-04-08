@@ -1,3 +1,5 @@
+// Конфиг
+
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-10',
   headers: {
@@ -6,12 +8,16 @@ const config = {
   }
 }
 
+// Проверка полученных от сервера данных
+
 function checkServerResponse(res) {
   if (res.ok)
     return (res.json());
   else
     return (Promise.reject(`Error: ${res}`));
 }
+
+// Получение данных о пользователе
 
 export const getProfileData = () => {
   return fetch(`${config.baseUrl}/users/me`, {
@@ -20,12 +26,16 @@ export const getProfileData = () => {
   .then((res) => checkServerResponse(res));
 }
 
+// Получение загруженных карточек
+
 export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
   .then((res) => checkServerResponse(res));
 }
+
+// Обновление данных о пользователе
 
 export const setNewProfileInfo = (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {
@@ -39,6 +49,8 @@ export const setNewProfileInfo = (name, about) => {
   .then((res) => checkServerResponse(res));
 }
 
+// Загрузка новой карточки
+
 export const sendNewCardOnServer = (name, link) => {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
@@ -51,6 +63,8 @@ export const sendNewCardOnServer = (name, link) => {
   .then((res) => checkServerResponse(res));
 }
 
+// Удаление карточки
+
 export const deleteCardFromServer = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
@@ -58,6 +72,8 @@ export const deleteCardFromServer = (cardId) => {
   })
   .then((res) => checkServerResponse(res));
 }
+
+// Добавить "лайк"
 
 export const addLikeOnCard = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
@@ -67,6 +83,8 @@ export const addLikeOnCard = (cardId) => {
   .then((res) => checkServerResponse(res));
 }
 
+// Убрать "лайк"
+
 export const removeLikeFromCard = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'DELETE',
@@ -74,6 +92,8 @@ export const removeLikeFromCard = (cardId) => {
   })
   .then((res) => checkServerResponse(res));
 }
+
+// Изменить аватар
 
 export const updateAvatar = (newUrl) => {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
