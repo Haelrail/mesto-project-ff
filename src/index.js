@@ -112,8 +112,6 @@ enableValidation(popupFormList);
 
 Promise.all([getProfileData(), getInitialCards()])
   .then(([data, cards]) => {
-    console.log(data);
-    console.log(cards);
     profileName.textContent = data.name;
     profileOccupation.textContent = data.about;
     profileImage.style = `background-image: url("${data.avatar}")`;
@@ -151,4 +149,5 @@ function changeLoadingButtonText(status) {
   else
     actualButton.textContent = 'Сохранить';
 };
+
 

@@ -10,8 +10,11 @@
 }
 
 .popup__content_one-input {
-  /* min-height: inherit; */
   min-height: 230px;
+}
+
+.popup__content_no-input {
+  min-height: 80px;
 }
 
 @media screen and (max-width: 568px) {

@@ -27,34 +27,6 @@ export const getInitialCards = () => {
   .then((res) => checkServerResponse(res));
 }
 
-// export const getProfileData = new Promise((resolve, reject) => {
-//   fetch('https://nomoreparties.co/v1/wff-cohort-10/users/me', {
-//     headers: {
-//       authorization: '8f3d3456-430a-4c87-a5de-14735dcc84d0'
-//     }
-//   })
-//   .then((res) => {
-//     if (res.ok)
-//       resolve(res.json());
-//     else
-//       reject();
-//   });
-// })
-
-// export const getInitialCards = new Promise((resolve, reject) => {
-//   fetch('https://nomoreparties.co/v1/wff-cohort-10/cards', {
-//     headers: {
-//       authorization: '8f3d3456-430a-4c87-a5de-14735dcc84d0'
-//     }
-//   })
-//   .then((res) => {
-//     if(res.ok)
-//       resolve(res.json());
-//     else
-//       reject();
-//   })
-// })
-
 export const setNewProfileInfo = (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',

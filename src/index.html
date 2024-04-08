@@ -85,6 +85,15 @@
       </form>
     </div>
   </div>
+  <div class="popup popup_type_delete-card">
+    <div class="popup__content popup__content_no-input">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Вы уверены?</h3>
+      <form class="popup__form" name="delete-card">
+        <button type="submit" class="button popup__button">Да</button>
+      </form>
+    </div>
+  </div>
   <div class="popup popup_type_image">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close"></button>
@@ -96,7 +105,7 @@
 
 <template id="card-template">
   <li class="places__item card">
-    <img class="card__image" src="" alt="" />
+    <img class="card__image" src="" alt=""/>
     <button type="button" class="card__delete-button"></button>
     <div class="card__description">
       <h2 class="card__title">
