@@ -16,8 +16,9 @@ export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwn
 
   if(cardOwnerId === userId)
     deleteButton.addEventListener('click', (event) => {
-      deleteCard(event);
-      deleteCardFromServer(cardId);
+      deleteCardFromServer(cardId)
+      .then((res) => deleteCard(event))
+      .catch((err) => console.error(err));
     });
   else
     deleteButton.remove();
@@ -53,14 +54,22 @@ function checkLike(likeList, likeButton, userId) {
 
 export function likeCard(cardId, likeButton, cardLikeNumber, newCard) {
   if (likeButton.classList.contains('card__like-button_is-active')) {
-    likeButton.classList.remove('card__like-button_is-active');
-    newCard.querySelector('.card__like-counter').textContent = --cardLikeNumber;
-    removeLikeFromCard(cardId);
+    removeLikeFromCard(cardId)
+    .then((res) => {
+      newCard.querySelector('.card__like-counter').textContent = res.likes.length;
+      likeButton.classList.remove('card__like-button_is-active');
+      cardLikeNumber--;
+    })
+    .catch((err) => console.error(err));
   }
   else {
-    likeButton.classList.add('card__like-button_is-active');
-    newCard.querySelector('.card__like-counter').textContent = ++cardLikeNumber;
-    addLikeOnCard(cardId);
+    addLikeOnCard(cardId)
+    .then((res) => {
+      newCard.querySelector('.card__like-counter').textContent = res.likes.length;
+      likeButton.classList.add('card__like-button_is-active');
+      cardLikeNumber++;
+    })
+    .catch((err) => console.error(err));
   }
   return (cardLikeNumber);
 }

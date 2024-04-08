@@ -47,10 +47,15 @@ const profileNewCardButton = profile.querySelector('.profile__add-button');
 
 function handleFormSubmit(event) {
   event.preventDefault();
-  profileName.textContent = inputName.value;
-  profileOccupation.textContent = inputOccupation.value;
+  changeLoadingButtonText(false);
+  setNewProfileInfo(inputName.value, inputOccupation.value)
+  .then((res) => {
+    profileName.textContent = res.name;
+    profileOccupation.textContent = res.about;
+  })
+  .catch((err) => console.error(err))
+  .finally(() => changeLoadingButtonText(true));
   closePopup(profilePopup);
-  setNewProfileInfo(profileName.textContent, profileOccupation.textContent);
 }
 
 profileFormElement.addEventListener('submit', handleFormSubmit);
@@ -66,8 +71,11 @@ profileEditButton.addEventListener('click', function() {
 
 function handleFormNewCard(event) {
   event.preventDefault();
-  const cardId = sendNewCardOnServer(inputCardName.value, inputCardLink.value)._id;
-  cardsList.prepend(createCard(inputCardName.value, inputCardLink.value, openCard, 0, userId, userId, cardId, []));
+  changeLoadingButtonText(false);
+  sendNewCardOnServer(inputCardName.value, inputCardLink.value)
+  .then((res) => cardsList.prepend(createCard(res.name, res.link, openCard, res.likes.length, res.owner._id, res.owner._id, res._id, res.likes)))
+  .catch((err) => console.error(err))
+  .finally(() => changeLoadingButtonText(true));
   closePopup(newCardPopup);
   clearValidation(cardFormElement);
   cardFormElement.reset();
@@ -112,13 +120,17 @@ Promise.all([getProfileData(), getInitialCards()])
     userId = data._id;
 
     cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, userId, card._id, card.likes)));
-  });
+  })
+  .catch((err) => console.error(err));
 
 function handleFormAvatarChange(event) {
   event.preventDefault();
+  changeLoadingButtonText(false);
   const newAvatarLink = profileAvatarChangeElement.querySelector('.popup__input').value;
-  profileImage.style = `background-image: url("${newAvatarLink}")`;
-  updateAvatar(newAvatarLink);
+  updateAvatar(newAvatarLink)
+  .then((res) => profileImage.style = `background-image: url("${res.avatar}")`)
+  .catch((err) => console.error(err))
+  .finally(() => changeLoadingButtonText(true));
   closePopup(popupChangeAvatar);
   clearValidation(profileAvatarChangeElement);
 }
@@ -131,4 +143,12 @@ profileImage.addEventListener('click', () => {
   clearValidation(profileAvatarChangeElement);
 });
 
+function changeLoadingButtonText(status) {
+  const actualButton = document.querySelector('.popup__button');
+  if (!status) {
+    actualButton.textContent = 'Сохранение...';
+  }
+  else
+    actualButton.textContent = 'Сохранить';
+};
 
