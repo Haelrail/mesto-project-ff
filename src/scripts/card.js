@@ -9,13 +9,26 @@ export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwn
   const deleteButton = newCard.querySelector('.card__delete-button');
   const likeButton = newCard.querySelector('.card__like-button');
   const cardOpening = newCard.querySelector('.card__image');
-  const popupDeleteCard = document.querySelector('.popup_type_delete-card');
 
   newCard.querySelector('.card__image').src = cardLink;
   newCard.querySelector('.card__image').alt = cardName;
   newCard.querySelector('.card__title').textContent = cardName;
   newCard.querySelector('.card__like-counter').textContent = cardLikeNumber;
 
+  manageDeleteButton(cardOwnerId, userId, deleteButton, cardId);
+
+  checkLike(likeList, likeButton, userId);
+
+  likeButton.addEventListener('click', () => cardLikeNumber = likeCard(cardId, likeButton, cardLikeNumber, newCard));
+  cardOpening.addEventListener('click', () => openCard(cardName, cardLink));
+
+  return newCard;
+}
+
+// Удаление карточек
+
+function manageDeleteButton(cardOwnerId, userId, deleteButton, cardId) {
+  const popupDeleteCard = document.querySelector('.popup_type_delete-card');
   if(cardOwnerId === userId)
     deleteButton.addEventListener('click', (event) => {
       const targetCard = event.target.closest('.card');
@@ -31,16 +44,7 @@ export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwn
     });
   else
     deleteButton.remove();
-
-  checkLike(likeList, likeButton, userId);
-
-  likeButton.addEventListener('click', () => cardLikeNumber = likeCard(cardId, likeButton, cardLikeNumber, newCard));
-  cardOpening.addEventListener('click', () => openCard(cardName, cardLink));
-
-  return newCard;
 }
-
-// Функция удаления карточки
 
 export function deleteCard(card) {
   card.remove();
