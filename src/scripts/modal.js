@@ -1,3 +1,4 @@
+import { handleDeleteButton } from "./card";
 // Управление модальными окнами
 
 // Закрытие окна и снятие всех обработчиков
@@ -7,6 +8,8 @@ export function closePopup(popup) {
   document.removeEventListener('click', closePopupOverlay);
   popup.querySelector('.popup__close').removeEventListener('click', closePopupButton);
   popup.classList.remove('popup_is-opened');
+  if (popup === document.querySelector('.popup_type_delete-card'))
+    document.querySelector('.popup_type_delete-card').removeEventListener('submit', handleDeleteButton);
 }
 
 // Закрытие по нажатию esc

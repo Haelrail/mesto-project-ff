@@ -1,28 +1,28 @@
 // Управление отображением ошибки ввода
 
-const showInputError = (input, form) => {
-  input.classList.add('popup__input_type_error');
+const showInputError = (input, form, config) => {
+  input.classList.add(config.inputErrorClass);
   const errorNote = form.querySelector(`.${input.id}-error`);
   errorNote.textContent = input.validationMessage;
 };
 
-const hideInputError = (input, form) => {
-  input.classList.remove('popup__input_type_error')
+const hideInputError = (input, form, config) => {
+  input.classList.remove(config.inputErrorClass);
   const errorNote = form.querySelector(`.${input.id}-error`);
   errorNote.textContent = '';
 };
 
 // Проверка введенного текста
 
-const checkValid = (input, form) => {
+const checkValid = (input, form, config) => {
   if (input.validity.patternMismatch)
-    input.setCustomValidity("Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы");
+    input.setCustomValidity(input.dataset.errorMessage);
   else
   input.setCustomValidity('');
   if (!input.validity.valid)
-    showInputError(input, form);
+    showInputError(input, form, config);
   else
-    hideInputError(input, form);
+    hideInputError(input, form, config);
 };
 
 function checkInputsValid(inputList) {
@@ -33,47 +33,48 @@ function checkInputsValid(inputList) {
 
 // Управление кнопкой отправки формы
 
-function manageSubmitButton(button, inputList) {
+function manageSubmitButton(button, inputList, config) {
   if (checkInputsValid(inputList)) {
     button.disabled = true;
-    button.classList.add('popup__button_disabled');
-    button.classList.remove('popup__button_active');
+    button.classList.add(config.inactiveButtonClass);
+    button.classList.remove(config.activeButtonClass);
   }
   else {
     button.disabled = false;
-    button.classList.remove('popup__button_disabled');
-    button.classList.add('popup__button_active');
+    button.classList.remove(config.inactiveButtonClass);
+    button.classList.add(config.activeButtonClass);
   }
-
 };
 
 // Включить валидацию на всех полях в форме
 
-function addFormValidation(form) {
-  const inputList = Array.from(form.querySelectorAll('.popup__input'));
-  const submitButton = form.querySelector('.button');
-  manageSubmitButton(submitButton, inputList);
+function setEventListeners(form, config) {
+  const inputList = Array.from(form.querySelectorAll(config.inputSelector));
+  const submitButton = form.querySelector(config.submitButtonSelector);
+
+  manageSubmitButton(submitButton, inputList, config);
   inputList.forEach((input) => {
     input.addEventListener('input', () => {
-      checkValid(input, form);
-      manageSubmitButton(submitButton, inputList);
+      checkValid(input, form, config);
+      manageSubmitButton(submitButton, inputList, config);
     });
   });
 };
 
 // Отключить валидацию на форме
 
-export function clearValidation(form) {
-  const inputList = form.querySelectorAll('.popup__input_type_error');
+export function clearValidation(form, config) {
+  const inputList = Array.from(form.querySelectorAll(config.inputSelector));
   inputList.forEach((input) => {
-    hideInputError(input, form);
+    hideInputError(input, form, config);
   })
 }
 
 // Включить валидацию в проекте
 
-export function enableValidation(formList) {
+export function enableValidation(config) {
+  const formList = Array.from(document.querySelectorAll(config.formSelector));
   formList.forEach((formElement) => {
-    addFormValidation(formElement);
+    setEventListeners(formElement, config);
   })
 }
