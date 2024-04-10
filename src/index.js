@@ -83,34 +83,25 @@ profileEditButton.addEventListener('click', function() {
 
 // Добавление новых карточек
 
+function addNewCard(cardName, cardLink, likeNumber, likesList, userId, cardOwnerId, cardId) {
+  const newCard = createCard(cardName, cardLink);
+  manageLikesOnCard(newCard, likeNumber, likesList, userId, cardId);
+  manageDeleteButton(newCard, cardOwnerId, userId, cardId);
+  manageCardOpening(newCard, cardName, cardLink, openCard); 
+  return (newCard);
+};
+
 function handleFormNewCard(event) {
   event.preventDefault();
   changeLoadingButtonText(false, newCardPopup.querySelector('.popup__button'));
   sendNewCardOnServer(inputCardName.value, inputCardLink.value)
   .then((res) => {
     cardsList.prepend(addNewCard(res.name, res.link, res.likes.length, res.likes, res.owner._id, res.owner._id, res._id));
-    // const newCard = createCard(res.name, res.link);
-    // cardsList.prepend(newCard);
-    // manageLikesOnCard(newCard, res.likes.length, res.likes, res.owner._id, res._id);
-    // manageDeleteButton(newCard, res.owner._id, res.owner._id, res._id);
-    // manageCardOpening(newCard, res.name, res.link, openCard);
     closePopup(newCardPopup);
   })
   .catch((err) => console.error(err))
   .finally(() => changeLoadingButtonText(true, newCardPopup.querySelector('.popup__button')));
 }
-
-// function handleFormNewCard(event) {
-//   event.preventDefault();
-//   changeLoadingButtonText(false, newCardPopup.querySelector('.popup__button'));
-//   sendNewCardOnServer(inputCardName.value, inputCardLink.value)
-//   .then((res) => {
-//     cardsList.prepend(createCard(res.name, res.link, openCard, res.likes.length, res.owner._id, res.owner._id, res._id, res.likes));
-//     closePopup(newCardPopup);
-//   })
-//   .catch((err) => console.error(err))
-//   .finally(() => changeLoadingButtonText(true, newCardPopup.querySelector('.popup__button')));
-// }
 
 profileNewCardButton.addEventListener('click', function() {
   openPopup(newCardPopup);
@@ -146,21 +137,6 @@ Promise.all([getProfileData(), getInitialCards()])
     // cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, data._id, card._id, card.likes)));
   })
   .catch((err) => console.error(err));
-
-function addNewCard(cardName, cardLink, likeNumber, likesList, userId, cardOwnerId, cardId) {
-  const newCard = createCard(cardName, cardLink);
-  // cardsList.position(newCard);
-  manageLikesOnCard(newCard, likeNumber, likesList, userId, cardId);
-  manageDeleteButton(newCard, cardOwnerId, userId, cardId);
-  manageCardOpening(newCard, cardName, cardLink, openCard); 
-  return (newCard);
-}
-
-// const newCard = createCard(card.name, card.link);
-// cardsList.prepend(newCard);
-// manageLikesOnCard(newCard, card.likes.length, card.likes, data._id, card._id);
-// manageDeleteButton(newCard, card.owner._id, data._id, card._id);
-// manageCardOpening(newCard, card.name, card.link, openCard);
 
 // Смена аватара
 
