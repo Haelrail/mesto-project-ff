@@ -28,7 +28,6 @@ const openedCardImage = openCardPopup.querySelector('.popup__image');
 
 // Формы
 
-const popupFormList = Array.from(document.querySelectorAll('.popup__form'));
 const profileFormElement = document.forms['edit-profile'];
 const cardFormElement = document.forms['new-place'];
 const profileAvatarChangeElement = document.forms['new-avatar'];
@@ -75,8 +74,9 @@ function handleFormSubmit(event) {
 profileFormElement.addEventListener('submit', handleFormSubmit);
 
 profileEditButton.addEventListener('click', function() {
-  clearValidation(profileFormElement, validationConfig);
   openPopup(profilePopup);
+  profileFormElement.reset();
+  clearValidation(profileFormElement, validationConfig);
   inputName.value = profileName.textContent;
   inputOccupation.value = profileOccupation.textContent;
 });
@@ -88,11 +88,12 @@ function handleFormNewCard(event) {
   changeLoadingButtonText(false, newCardPopup.querySelector('.popup__button'));
   sendNewCardOnServer(inputCardName.value, inputCardLink.value)
   .then((res) => {
-    const newCard = createCard(res.name, res.link, openCard, res.likes.length, res.owner._id, res.owner._id, res._id, res.likes);
-    cardsList.prepend(newCard);
-    manageLikesOnCard(newCard, res.likes.length, res.likes, res.owner._id, res._id);
-    manageDeleteButton(newCard, res.owner._id, res.owner._id, res._id);
-    manageCardOpening(newCard, res.name, res.link);
+    cardsList.prepend(addNewCard(res.name, res.link, res.likes.length, res.likes, res.owner._id, res.owner._id, res._id));
+    // const newCard = createCard(res.name, res.link);
+    // cardsList.prepend(newCard);
+    // manageLikesOnCard(newCard, res.likes.length, res.likes, res.owner._id, res._id);
+    // manageDeleteButton(newCard, res.owner._id, res.owner._id, res._id);
+    // manageCardOpening(newCard, res.name, res.link, openCard);
     closePopup(newCardPopup);
   })
   .catch((err) => console.error(err))
@@ -113,8 +114,8 @@ function handleFormNewCard(event) {
 
 profileNewCardButton.addEventListener('click', function() {
   openPopup(newCardPopup);
-  clearValidation(cardFormElement, validationConfig);
   cardFormElement.reset();
+  clearValidation(cardFormElement, validationConfig);
 });
 
 cardFormElement.addEventListener('submit', handleFormNewCard);
@@ -130,8 +131,6 @@ function openCard(cardName, cardLink) {
 
 // Включение валидации форм
 
-// enableValidation(popupFormList);
-
 enableValidation(validationConfig);
 
 // Получение начальных данных от сервера
@@ -142,9 +141,26 @@ Promise.all([getProfileData(), getInitialCards()])
     profileOccupation.textContent = data.about;
     profileImage.style = `background-image: url("${data.avatar}")`;
 
-    cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, data._id, card._id, card.likes)));
+    cards.forEach((card) => cardsList.append(addNewCard(card.name, card.link, card.likes.length, card.likes, data._id, card.owner._id, card._id)));
+
+    // cards.forEach((card) => cardsList.append(createCard(card.name, card.link, openCard, card.likes.length, card.owner._id, data._id, card._id, card.likes)));
   })
   .catch((err) => console.error(err));
+
+function addNewCard(cardName, cardLink, likeNumber, likesList, userId, cardOwnerId, cardId) {
+  const newCard = createCard(cardName, cardLink);
+  // cardsList.position(newCard);
+  manageLikesOnCard(newCard, likeNumber, likesList, userId, cardId);
+  manageDeleteButton(newCard, cardOwnerId, userId, cardId);
+  manageCardOpening(newCard, cardName, cardLink, openCard); 
+  return (newCard);
+}
+
+// const newCard = createCard(card.name, card.link);
+// cardsList.prepend(newCard);
+// manageLikesOnCard(newCard, card.likes.length, card.likes, data._id, card._id);
+// manageDeleteButton(newCard, card.owner._id, data._id, card._id);
+// manageCardOpening(newCard, card.name, card.link, openCard);
 
 // Смена аватара
 

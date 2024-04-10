@@ -65,6 +65,8 @@ function setEventListeners(form, config) {
 
 export function clearValidation(form, config) {
   const inputList = Array.from(form.querySelectorAll(config.inputSelector));
+  const submitButton = form.querySelector(config.submitButtonSelector);
+  manageSubmitButton(submitButton, inputList, config);
   inputList.forEach((input) => {
     hideInputError(input, form, config);
   })

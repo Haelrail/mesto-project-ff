@@ -73,7 +73,7 @@ export function handleDeleteButton(event) {
     closePopup(document.querySelector('.popup_type_delete-card'));
   })
   .catch((err) => console.error(err));
-};
+}
 
 // Обработка "лайков" на карточке
 
@@ -82,7 +82,7 @@ function checkLike(likeList, likeButton, userId) {
     likeButton.classList.add('card__like-button_is-active');
 }
 
-export function likeCard(cardId, likeButton, cardLikeNumber, newCard) {
+function likeCard(cardId, likeButton, cardLikeNumber, newCard) {
   if (likeButton.classList.contains('card__like-button_is-active')) {
     removeLikeFromCard(cardId)
     .then((res) => {
@@ -102,7 +102,7 @@ export function likeCard(cardId, likeButton, cardLikeNumber, newCard) {
     .catch((err) => console.error(err));
   }
   return (cardLikeNumber);
-}
+};
 
 export function manageLikesOnCard(newCard, cardLikeNumber, likeList, userId, cardId) {
   const likeButton = newCard.querySelector('.card__like-button');
@@ -114,7 +114,7 @@ export function manageLikesOnCard(newCard, cardLikeNumber, likeList, userId, car
 
 // Открытие карточки
 
-export function manageCardOpening(newCard, cardName, cardLink) {
+export function manageCardOpening(newCard, cardName, cardLink, openCard) {
   const cardOpening = newCard.querySelector('.card__image');
 
   cardOpening.addEventListener('click', () => openCard(cardName, cardLink));
