@@ -1,6 +1,6 @@
 import './pages/index.css';
 import {initialCards} from './scripts/cards.js';
-import { createCard, manageLikesOnCard, manageDeleteButton, manageCardOpening } from './scripts/card.js';
+import { createCard, manageLikesOnCard, manageCardOpening, handleDeleteButtonWrapper } from './scripts/card.js';
 import { closePopup, openPopup } from './scripts/modal.js';
 import { clearValidation, enableValidation } from './scripts/validation.js';
 import { getProfileData, getInitialCards, setNewProfileInfo, sendNewCardOnServer, deleteCardFromServer, updateAvatar } from './scripts/api.js';
@@ -17,6 +17,8 @@ const openCardPopup = document.querySelector('.popup_type_image');
 
 const popupChangeAvatar = document.querySelector('.popup_type_change-avatar');
 
+const popupDeleteCard = document.querySelector('.popup_type_delete-card');
+
 const inputCardName = document.querySelector('.popup__input_type_card-name');
 const inputCardLink = document.querySelector('.popup__input_type_url');
 
@@ -31,6 +33,7 @@ const openedCardImage = openCardPopup.querySelector('.popup__image');
 const profileFormElement = document.forms['edit-profile'];
 const cardFormElement = document.forms['new-place'];
 const profileAvatarChangeElement = document.forms['new-avatar'];
+const deleteCardElement = document.forms['delete-card']; 
 
 // Профиль и его разделы
 
@@ -54,7 +57,8 @@ const validationConfig = {
 
 // Вывод карточек на страницу
 
-
+let targetCard;
+let currentCardId;
 
 // Изменение профиля
 
@@ -103,6 +107,18 @@ function handleFormNewCard(event) {
   .finally(() => changeLoadingButtonText(true, newCardPopup.querySelector('.popup__button')));
 }
 
+function manageDeleteButton(newCard, cardOwnerId, userId, cardId) {
+  const deleteButton = newCard.querySelector('.card__delete-button');
+  if(cardOwnerId === userId)
+    deleteButton.addEventListener('click', (event) => {
+      targetCard = event.target.closest('.card');
+      currentCardId = cardId;
+      openPopup(popupDeleteCard);
+    });
+  else
+    deleteButton.remove();
+}
+
 profileNewCardButton.addEventListener('click', function() {
   openPopup(newCardPopup);
   cardFormElement.reset();
@@ -110,6 +126,12 @@ profileNewCardButton.addEventListener('click', function() {
 });
 
 cardFormElement.addEventListener('submit', handleFormNewCard);
+
+deleteCardElement.addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (handleDeleteButtonWrapper(currentCardId, targetCard))
+    closePopup(popupDeleteCard);
+});
 
 // Открытие карточек
 

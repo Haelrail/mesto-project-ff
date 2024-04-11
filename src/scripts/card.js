@@ -1,9 +1,8 @@
 import { deleteCardFromServer, addLikeOnCard, removeLikeFromCard } from "./api";
-import { closePopup, openPopup } from "./modal";
 
 // Функция создания карточки
 
-export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwnerId, userId, cardId, likeList) {
+export function createCard(cardName, cardLink) {
 
   const cardTemplate = document.querySelector('#card-template').content;
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);
@@ -17,32 +16,20 @@ export function createCard(cardName, cardLink, openCard, cardLikeNumber, cardOwn
 
 // Удаление карточек
 
-let targetCard;
-let currentCardId;
-
-export function manageDeleteButton(newCard, cardOwnerId, userId, cardId) {
-  const popupDeleteCard = document.querySelector('.popup_type_delete-card');
-  const deleteButton = newCard.querySelector('.card__delete-button');
-  if(cardOwnerId === userId)
-    deleteButton.addEventListener('click', (event) => {
-      targetCard = event.target.closest('.card');
-      currentCardId = cardId;
-      const deleteCardElement = document.forms['delete-card'];
-      openPopup(popupDeleteCard);
-      deleteCardElement.addEventListener('submit', handleDeleteButton);
-    });
-  else
-    deleteButton.remove();
-}
-
-export function handleDeleteButton(event) {
-  event.preventDefault();
+function handleDeleteButton(currentCardId, targetCard) {
   deleteCardFromServer(currentCardId)
   .then((res) => {
     targetCard.remove();
-    closePopup(document.querySelector('.popup_type_delete-card'));
+    return true;
   })
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error(err)
+    return false;
+  });
+}
+
+export async function handleDeleteButtonWrapper(currentCardId, targetCard) {
+  return (await handleDeleteButton(currentCardId, targetCard));
 }
 
 // Обработка "лайков" на карточке
